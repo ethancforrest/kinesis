@@ -1,0 +1,175 @@
+TAMBLA IMPROVED - QUICK START GUIDE
+===================================
+
+HOW TO GET THIS RUNNING ON YOUR NORNS
+-------------------------------------
+
+OPTION 1: DIRECT UPGRADE (RECOMMENDED)
+--------------------------------------
+1. Connect to your Norns via Maiden (http://norns.local)
+2. Navigate to: /home/we/dust/code/tambla/
+3. BACKUP your current tambla.lua:
+   - Rename it to tambla-original.lua
+4. UPLOAD the improved tambla.lua from this project:
+   - Copy: Tambla-Improved/improved/tambla.lua 
+   - To: /home/we/dust/code/tambla/tambla.lua
+5. RESTART the script or reboot Norns
+6. You're done! All your patterns are preserved.
+
+OPTION 2: SIDE-BY-SIDE TESTING
+------------------------------
+1. Create new folder: /home/we/dust/code/tambla-improved/
+2. Copy the improved tambla.lua into this folder
+3. Load it as a separate script to test
+4. Compare with original before switching
+
+FIRST TIME SETUP
+----------------
+1. LOAD the script from the Norns SELECT menu
+2. CONNECT a MIDI keyboard to Norns
+3. SET output device:
+   - PARAMETERS > output > choose 'engine' or 'midi-1'
+4. PRESS K3 to start the transport
+5. HOLD a key on your MIDI keyboard - you'll hear rhythm!
+
+NEW FEATURES TO TRY
+-------------------
+HELP SYSTEM:
+- HOLD K1 for 1 second on any page
+- Get context-specific help and tips
+- Auto-closes after 10 seconds
+
+TOOLTIPS:
+- Turn any encoder (E1, E2, E3)
+- Watch bottom of screen for value feedback
+- Shows current parameter and units
+
+STATUS:
+- Top-right corner: ▶ = playing, ⏸ = stopped
+- Bottom-right: number of active voices
+- Bottom-left: version number
+
+BASIC WORKFLOW
+--------------
+1. START TRANSPORT: Press K3
+2. TRIGGER PATTERNS: Hold MIDI keys
+   - First key = Row 1 rhythm
+   - Second key = Row 2 rhythm
+   - Up to 4 simultaneous rhythmic voices
+3. ADJUST PARAMETERS: Use encoders E1/E2/E3
+   - Watch tooltips for real-time feedback
+4. SWITCH PAGES: Press K2
+   - PLAY page: Performance and row parameters
+   - EDIT page: Individual step programming
+   - MACRO page: Save/load patterns
+5. GET HELP: Hold K1 on any page
+
+UNDERSTANDING THE INTERFACE
+---------------------------
+PLAY PAGE (Main performance):
+- E1: Select pattern slot (1-8)
+- E2: Select row to edit (1-4) 
+- E3: Adjust current parameter
+- K3: Start/stop transport
+
+EDIT PAGE (Step programming):
+- E1: Select row (1-4)
+- E2: Select step (1-16)
+- E3: Adjust step value (velocity/chance/duration)
+- K3: Toggle step on/off
+
+MACRO PAGE (Pattern management):
+- E1: Select slot
+- E2: Choose operation (copy/save/load)
+- E3: Navigate files/options
+- K3: Execute action
+
+KEY CONCEPTS
+------------
+ROWS: 4 independent rhythmic voices
+- Each can have different length (2-16 steps)
+- Each can have different timing (bend/offset)
+- Triggered by holding MIDI keys
+
+BEND: Timing curve for each row
+- 1.0 = straight timing
+- < 1.0 = fast start, slow end
+- > 1.0 = slow start, fast end
+
+STEPS: Individual triggers in each row
+- Chance: Probability of playing (0-100%)
+- Velocity: How loud (0-127)
+- Duration: How long the note plays
+
+TROUBLESHOOTING
+---------------
+NO SOUND:
+- Check PARAMETERS > output setting
+- Try 'engine' for internal audio
+- Try 'midi-1' if using external synth
+- Make sure transport is running (K3)
+
+HELP NOT SHOWING:
+- Hold K1 for full 1 second
+- Must be on a valid page
+- Release K1 to close
+
+NO TOOLTIPS:
+- Only appear when using encoders
+- Last 2 seconds then disappear
+- Some parameters don't have tooltips yet
+
+MIDI NOT WORKING:
+- Check SYSTEM > DEVICES > MIDI
+- Reconnect MIDI device if needed
+- Try different MIDI channels
+
+GOING DEEPER
+------------
+Once comfortable with basics:
+- EXPERIMENT with bend values for organic timing
+- PROGRAM complex polyrhythms with different row lengths
+- USE chance parameters for evolving patterns
+- SAVE patterns you like to files
+- EXPLORE Grid/Arc integration if you have them
+
+WHAT'S PRESERVED
+---------------
+- All your existing patterns work unchanged
+- All keyboard shortcuts the same
+- All original features intact
+- Performance characteristics maintained
+
+GETTING HELP
+------------
+- IN-SCRIPT: Hold K1 on any page
+- COMMUNITY: Ask questions at llllllll.co
+- DOCUMENTATION: Check the README.md
+- ORIGINAL: Reference original tambla docs
+
+PERFORMANCE TIPS
+----------------
+- Start simple: Use just one or two rows
+- Build complexity gradually
+- Use lower chance values for subtle variation
+- Experiment with different row lengths for polyrhythm
+- Save interesting patterns before experimenting further
+
+CREATIVE WORKFLOW
+-----------------
+1. START with transport running
+2. HOLD one MIDI key to hear Row 1
+3. ADJUST bend/offset to taste
+4. ADD second key for Row 2
+5. TWEAK parameters while listening
+6. SWITCH to Edit page to program specific steps
+7. SAVE patterns you want to keep
+8. EXPERIMENT and discover!
+
+That's it! You now have a more user-friendly tambla that will guide
+you as you explore its deep rhythmic possibilities.
+
+Remember: All the power of the original tambla is still there,
+just with better guidance and feedback to help you discover it.
+
+Happy rhythm making!
