@@ -47,7 +47,7 @@ Engine_Sunshine : CroneEngine {
         grainPlayers[voice].set(
           \buf, fileBuffers[voice],
           \buf_win_start, (sampleStart/maxBufferLength),
-          \buf_win_start, ((sampleStart + sampleLength)/maxBufferLength)
+          \buf_win_end, ((sampleStart + sampleLength)/maxBufferLength)
         );
       });
     },{

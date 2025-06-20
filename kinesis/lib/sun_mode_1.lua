@@ -40,6 +40,17 @@ function sun_mode_1.init(self)
   -- Deinit (cleanup) function
   self.deinit = function()
     print("deinit sun mode: 1")
+    
+    -- Cancel clocks with nil checks
+    if self.motion_clock then
+      clock.cancel(self.motion_clock)
+      self.motion_clock = nil
+    end
+    if self.wait_clock then
+      clock.cancel(self.wait_clock)
+      self.wait_clock = nil
+    end
+    
     softcut.buffer_clear_channel(self.index)
     softcut.enable(1,0)
     sun_mode_1.set_velocity(self,0)

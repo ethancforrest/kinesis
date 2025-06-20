@@ -28,6 +28,16 @@ function sun_mode_4.init(self)
   -- Deinit (cleanup) function
   self.deinit = function()
     print("deinit sun mode: 4")
+    
+    -- Cancel clocks with nil checks
+    if self.motion_clock then
+      clock.cancel(self.motion_clock)
+      self.motion_clock = nil
+    end
+    if self.wait_clock then
+      clock.cancel(self.wait_clock)
+      self.wait_clock = nil
+    end
   end  
 
 end

@@ -15,6 +15,11 @@ end
 -- For example: `quotient_remainder(5,2)` returns `2,0.5`
 --              because 5/2 = 2.5, so 2 is the quotient and 0.5 is the remainder
 function quotient_remainder(dividend,divisor)
+  -- Prevent division by zero
+  if divisor == 0 then
+    return 0, 0  -- Return safe default values
+  end
+  
   local integer_quotient 
   if dividend/divisor > 0 then 
     integer_quotient = math.floor(dividend/divisor) 

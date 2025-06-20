@@ -173,8 +173,10 @@ function sun_mode_2.init(self)
   self.deinit = function(self)
     print("deinit sun "..self.index .. " mode 2")
     engine.gate(self.index,0) -- set gate to 1 so grains can play
-    self.lattice:stop()
-    self.lattice = nil
+    if self.lattice then
+      self.lattice:stop()
+      self.lattice = nil
+    end
     for reflector=1,#self.reflectors do
       self.reflectors[reflector]:stop()
       self.reflectors[reflector]:clear()

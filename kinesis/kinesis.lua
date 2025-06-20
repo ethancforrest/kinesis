@@ -40,12 +40,12 @@ include "lib/utilities"       -- load utilities written for this script
 
 local Sun = include "lib/sun" 
 
-screen_dirty = true
+local screen_dirty = true
 
 local num_sun_modes = 4
 local prev_norns_menu_status = false
 local redrawtimer
-alt_key = false
+local alt_key = false
 
 suns = {}
 
@@ -98,21 +98,21 @@ function key(n, z)
   if n==1 then
     if  z==1 then
       alt_key = true
-    elseif n==1 and z==0 then
+    elseif z==0 then
       alt_key = false
     end
   elseif n==2 then
     if z==0 then
       if alt_key == true then
         current_modes[1] = util.wrap(current_modes[1]+1,1,num_sun_modes)
-        init_sun(1,current_modes[1])
+        init_sun(1)
       end
     end
   elseif n==3 then 
     if z==0 then
       if alt_key == true then
         current_modes[2] = util.wrap(current_modes[2]+1,1,num_sun_modes)
-        init_sun(2,current_modes[2])
+        init_sun(2)
       end
     end
   end
