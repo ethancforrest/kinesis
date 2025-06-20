@@ -59,15 +59,11 @@ end
 -- Revised internal morph function.
 -- Now "self" is passed so that we can check self.cancel_morph and, if true, speed up the morph.
 function morph(self, s_val, f_val, duration, steps, shape, callback, caller_id, steps_remaining, current_val)
-  -- Instead of immediately canceling, check for cancellation and accelerate the process.
-  local accel_factor = 0.5  -- adjust this factor to increase speed when cancelled.
+  -- Check for cancellation early and exit immediately if requested
   if self and self.cancel_morph then
-    -- Scale down the remaining duration and steps.
-    duration = duration * accel_factor
-    steps = math.floor(math.max(1, math.ceil(steps * accel_factor)))
-    if steps_remaining then
-    steps_remaining = math.max(1, math.ceil(steps_remaining * accel_factor))
-    end
+    -- Immediately complete the morph to avoid race conditions
+    if callback then callback(f_val, true, caller_id) end
+    return
   end
   
   if steps <= 0 then
@@ -120,9 +116,16 @@ function morph(self, s_val, f_val, duration, steps, shape, callback, caller_id, 
   end
   
   if not done then
+    -- Check for cancellation before continuing the morph
+    if self and self.cancel_morph then
+      -- Complete immediately if cancelled
+      if callback then callback(f_val, true, caller_id) end
+      return
+    end
+    
     steps_remaining = steps_remaining - 1
     clock.run(function()
-    morph(self, s_val, f_val, duration, steps, shape, callback, caller_id, steps_remaining, next_val)
+      morph(self, s_val, f_val, duration, steps, shape, callback, caller_id, steps_remaining, next_val)
     end)
   end
 end

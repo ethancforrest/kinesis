@@ -36,9 +36,14 @@ Engine_Sunshine : CroneEngine {
     if (path.notNil, {
       var soundFile, duration, newBuf;
       soundFile = SoundFile.new;
-      soundFile.openRead(path.asString.standardizePath);
-      duration = soundFile.duration;
-      soundFile.close;
+      if (soundFile.openRead(path.asString.standardizePath), {
+        duration = soundFile.duration;
+        soundFile.close;
+      }, {
+        ("Failed to open audio file: " ++ path).postln;
+        soundFile.close;
+        ^this; // Exit early if file can't be opened
+      });
       ["file read into buffer...soundfile duration,sampleStart, sampleLength",duration,sampleStart,sampleLength].postln;
       newBuf = Buffer.readChannel(context.server, path, channels:[0], action: {
         arg buf;

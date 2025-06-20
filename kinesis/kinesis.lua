@@ -88,7 +88,7 @@ end
 
 function init_sun(sun)
   local mode = current_modes[sun]
-  if suns[sun] then suns[sun].deinit(suns[sun]) end
+  if suns[sun] and suns[sun].deinit then suns[sun].deinit(suns[sun]) end
   suns[sun] = Sun:new(sun, mode)
   screen_dirty = true
 end

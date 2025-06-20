@@ -270,13 +270,17 @@ function sun_mode_2.key(self, n, z)
   if self.state == 1 then  -- Record state
     if self.record[reflector_id] == 1 and z == 0 then
       self.record[reflector_id] = 0
-      self.reflectors[reflector_id]:set_rec(0)
+      if self.reflectors[reflector_id] then
+        self.reflectors[reflector_id]:set_rec(0)
+      end
       print("key: stop reflector recording")    
     elseif self.record[reflector_id] == 0 and z == 0 then
       print("key: start reflector recording",reflector_id,self.reflectors[reflector_id])
       self.record[reflector_id] = 1
-      self.reflectors[reflector_id]:clear()
-      self.reflectors[reflector_id]:set_rec(1)
+      if self.reflectors[reflector_id] then
+        self.reflectors[reflector_id]:clear()
+        self.reflectors[reflector_id]:set_rec(1)
+      end
     end
   elseif self.state == 2 then -- Play state
     if z == 0 then
@@ -300,11 +304,15 @@ function sun_mode_2.key(self, n, z)
     if self.loop[reflector_id] == 1 and z == 0 then
       self.loop[reflector_id] = 0
       print("key: stop reflector looping")
-      self.reflectors[reflector_id]:set_loop(0)
+      if self.reflectors[reflector_id] then
+        self.reflectors[reflector_id]:set_loop(0)
+      end
     elseif self.loop[reflector_id] == 0 and z == 0 then
       self.loop[reflector_id] = 1
       print("key: start reflector looping")
-      self.reflectors[reflector_id]:set_loop(1)
+      if self.reflectors[reflector_id] then
+        self.reflectors[reflector_id]:set_loop(1)
+      end
     end
   end
 end

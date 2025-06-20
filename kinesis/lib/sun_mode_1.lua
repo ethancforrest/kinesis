@@ -19,9 +19,9 @@ function sun_mode_1.init(self)
   self.sun_pulsing = false
   self.sun_pulse_phase = 0
   self.sun_pulse_speed = 0.2
-  self.cut_previous_input_direction = 0
+  self.previous_input_direction = 0
   self.reversed = false
-  self.cut_recently_reversed = false
+  self.recently_reversed = false
   self.cut_preview_speed = false
   self.sun_level_base = 10
   self.sun_level = self.sun_level_base
@@ -60,8 +60,11 @@ end
 function sun_mode_1.init_softcut(self)
   print("init softcut")
   
-  audio.level_adc_cut(0)
-  audio.level_eng_cut(1)
+  -- Audio routing setup for softcut
+  -- Note: These can be adjusted based on your audio needs:
+  -- audio.level_adc_cut(1) -- Enable this for live input recording
+  audio.level_adc_cut(0)    -- Disable ADC input to softcut (no live recording)
+  audio.level_eng_cut(1)    -- Enable engine output to softcut (for playback)
   
   softcut.enable(self.cut_voice,1)                        -- voice, state
   softcut.buffer(self.cut_voice,1)                        -- voice, buffer
@@ -94,7 +97,7 @@ function sun_mode_1.set_speed(self,delta)
   local input_direction = sign(delta)
   
   -- Check to see if the photon movement should stop due to direction changing
-  if input_direction ~= self.cut_previous_input_direction and self.cut_previous_input_direction ~= 0 then
+  if input_direction ~= self.previous_input_direction and self.previous_input_direction ~= 0 then
     -- print("reverse direction")
     if self.motion_clock then
       clock.cancel(self.motion_clock)
@@ -111,19 +114,19 @@ function sun_mode_1.set_speed(self,delta)
     self.cut_preview_speed = false
     self.velocity_deltas = {}
     self.reversed = true
-    self.cut_previous_input_direction = input_direction
+    self.previous_input_direction = input_direction
     
-    -- Set cut_recently_reversed to true for 0.5 seconds
-    self.cut_recently_reversed = true
+    -- Set recently_reversed to true for 0.5 seconds
+    self.recently_reversed = true
     clock.run(function()
       clock.sleep(0.5)
-      self.cut_recently_reversed = false
+      self.recently_reversed = false
     end)
     return
   end
   
-  -- If cut_recently_reversed is true, break out of this code (this prevents velocity from being set)
-  if self.cut_recently_reversed then
+  -- If recently_reversed is true, break out of this code (this prevents velocity from being set)
+  if self.recently_reversed then
     -- print("recently reversed")
     return
   end
@@ -133,7 +136,7 @@ function sun_mode_1.set_speed(self,delta)
     self.velocity_deltas = {}
   end
 
-  self.cut_previous_input_direction = input_direction
+  self.previous_input_direction = input_direction
   sun_mode_1.set_velocity(self,delta)
 end
 
