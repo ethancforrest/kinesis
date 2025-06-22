@@ -1,0 +1,16 @@
+{
+  "schema_version": "v1",
+  "name": "norns",
+  "description": "Monome Norns instrument control via SSH",
+  "version": "0.1.0",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "claude",
+    "modules": ["norns_cli.claude_norns"]
+  },
+  "contact_email": "your-email@example.com",
+  "legal_info_url": "https://monome.org/docs/norns/",
+  "tool_docs": "Control your Norns device directly from Claude Code. This tool provides SSH connectivity, documentation access, and Git integration for seamless Norns script development.\n\nFeatures:\n- Connect to Norns via SSH\n- Run Lua commands directly on Norns\n- Access comprehensive Norns documentation\n- Sync scripts to Norns for testing\n- Commit and push changes to GitHub\n\nConfiguration:\n- host: IP address of your Norns device (found in SYSTEM > WIFI on Norns)\n- password: Norns device password (default: 'sleep')\n\nQuick start:\n```python\nfrom norns_cli.claude_norns import connect_to_norns\n\n# Connect to Norns\nnorns = connect_to_norns(host='192.168.1.100', password='sleep')\nawait norns.connect()\n\n# Run Lua code\nresult = await norns.run_lua('print(\"Hello from Claude Code!\")')\nprint(result)\n\n# Sync a script\nawait norns.sync_file('/path/to/script.lua', '/home/we/dust/code/my_script/my_script.lua')\n\n# Disconnect\nawait norns.disconnect()\n```"
+}

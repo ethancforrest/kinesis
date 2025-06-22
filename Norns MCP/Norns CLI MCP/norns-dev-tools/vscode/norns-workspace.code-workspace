@@ -1,0 +1,141 @@
+{
+  "folders": [
+    {
+      "name": "Norns Scripts",
+      "path": "/Users/eforrest/Norns scripts"
+    },
+    {
+      "name": "Norns Dev Tools", 
+      "path": "/Users/eforrest/Norns scripts/Norns MCP/Norns CLI MCP/norns-dev-tools"
+    }
+  ],
+  "settings": {
+    "files.associations": {
+      "*.lua": "lua"
+    },
+    "terminal.integrated.defaultProfile.osx": "bash",
+    "norns.defaultIP": "192.168.50.151",
+    "norns.sshUser": "we",
+    "norns.sshPassword": "sleep",
+    "norns.remoteCodePath": "/home/we/dust/code",
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "files.exclude": {
+      "**/.git": true,
+      "**/.DS_Store": true,
+      "**/node_modules": true,
+      "**/__pycache__": true
+    }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Sync Script to Norns",
+        "type": "shell",
+        "command": "python3",
+        "args": [
+          "${workspaceFolder:Norns Dev Tools}/sync_to_norns.py",
+          "${file}",
+          "--restart"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Sync Current Directory to Norns",
+        "type": "shell",
+        "command": "python3", 
+        "args": [
+          "${workspaceFolder:Norns Dev Tools}/sync_to_norns.py",
+          "${fileDirname}",
+          "--restart"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Restart Norns Script",
+        "type": "shell",
+        "command": "python3",
+        "args": [
+          "${workspaceFolder:Norns Dev Tools}/sync_to_norns.py", 
+          "restart"
+        ],
+        "group": "test",
+        "presentation": {
+          "echo": true,
+          "reveal": "always", 
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "SSH to Norns",
+        "type": "shell",
+        "command": "ssh",
+        "args": [
+          "we@192.168.50.151"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "always",
+          "focus": true,
+          "panel": "new"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Open Maiden (Norns Web IDE)",
+        "type": "shell", 
+        "command": "open",
+        "args": [
+          "http://192.168.50.151/maiden"
+        ],
+        "group": "build",
+        "presentation": {
+          "echo": true,
+          "reveal": "silent",
+          "focus": false,
+          "panel": "shared"
+        },
+        "problemMatcher": []
+      }
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Test Lua Script Locally",
+        "type": "lua",
+        "request": "launch",
+        "program": "${file}",
+        "cwd": "${workspaceFolder}",
+        "stopOnEntry": false
+      }
+    ]
+  },
+  "extensions": {
+    "recommendations": [
+      "sumneko.lua",
+      "ms-vscode-remote.remote-ssh",
+      "ms-python.python",
+      "formulahendry.code-runner",
+      "eamodio.gitlens"
+    ]
+  }
+}

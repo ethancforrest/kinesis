@@ -1,0 +1,310 @@
+openapi: 3.0.0
+info:
+  title: Norns API
+  description: API for controlling Monome Norns from Claude Code
+  version: 0.1.0
+  contact:
+    email: your-email@example.com
+servers:
+  - url: https://api.example.com/v1
+    description: Production server (uses live data)
+paths:
+  /connect:
+    post:
+      summary: Connect to a Norns device
+      description: Establish an SSH connection to a Norns device
+      operationId: connect
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - host
+              properties:
+                host:
+                  type: string
+                  description: Hostname or IP address of the Norns device
+                port:
+                  type: integer
+                  description: SSH port on the Norns device
+                  default: 22
+                username:
+                  type: string
+                  description: Username for the Norns device
+                  default: we
+                password:
+                  type: string
+                  description: Password for the Norns device
+                  default: sleep
+      responses:
+        '200':
+          description: Connection successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the connection was successful
+                  message:
+                    type: string
+                    description: Description of the result
+
+  /run_lua:
+    post:
+      summary: Run Lua code on Norns
+      description: Execute Lua code on the connected Norns device
+      operationId: runLua
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+              properties:
+                code:
+                  type: string
+                  description: Lua code to execute
+      responses:
+        '200':
+          description: Code execution successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the execution was successful
+                  result:
+                    type: string
+                    description: Output of the Lua code
+
+  /run_command:
+    post:
+      summary: Run a shell command on Norns
+      description: Execute a shell command on the connected Norns device
+      operationId: runCommand
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - command
+              properties:
+                command:
+                  type: string
+                  description: Shell command to execute
+      responses:
+        '200':
+          description: Command execution successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the execution was successful
+                  stdout:
+                    type: string
+                    description: Standard output of the command
+                  stderr:
+                    type: string
+                    description: Standard error output of the command
+
+  /sync_file:
+    post:
+      summary: Sync a file to Norns
+      description: Copy a local file to the connected Norns device
+      operationId: syncFile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - local_path
+              properties:
+                local_path:
+                  type: string
+                  description: Path to local file
+                remote_path:
+                  type: string
+                  description: Path on Norns (if null, will use same filename in dust/code)
+      responses:
+        '200':
+          description: File sync successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the sync was successful
+
+  /list_scripts:
+    get:
+      summary: List scripts on Norns
+      description: Get a list of available scripts on the connected Norns device
+      operationId: listScripts
+      responses:
+        '200':
+          description: Script listing successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the listing was successful
+                  scripts:
+                    type: array
+                    items:
+                      type: string
+                    description: List of available scripts
+
+  /system_info:
+    get:
+      summary: Get system information from Norns
+      description: Retrieve system information from the connected Norns device
+      operationId: getSystemInfo
+      responses:
+        '200':
+          description: System information retrieval successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the retrieval was successful
+                  os_version:
+                    type: string
+                    description: OS version of the Norns device
+                  norns_version:
+                    type: string
+                    description: Norns version
+                  current_script:
+                    type: string
+                    description: Currently running script
+                  free_disk:
+                    type: string
+                    description: Available disk space
+                  free_memory:
+                    type: string
+                    description: Available memory
+
+  /search_docs:
+    get:
+      summary: Search Norns documentation
+      description: Search for topics in the Norns documentation
+      operationId: searchDocs
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: Optional category to search
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: Maximum number of results
+      responses:
+        '200':
+          description: Documentation search successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the search was successful
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        category:
+                          type: string
+                        content:
+                          type: string
+                    description: Search results
+
+  /restart_script:
+    post:
+      summary: Restart the current script on Norns
+      description: Restart the currently running script on the connected Norns device
+      operationId: restartScript
+      responses:
+        '200':
+          description: Script restart successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the restart was successful
+
+  /disconnect:
+    post:
+      summary: Disconnect from Norns
+      description: Close the SSH connection to the Norns device
+      operationId: disconnect
+      responses:
+        '200':
+          description: Disconnection successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the disconnection was successful
+components:
+  schemas:
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Error code
+        message:
+          type: string
+          description: Error message
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key

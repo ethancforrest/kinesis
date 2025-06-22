@@ -1,0 +1,17 @@
+[
+    {
+        "key": "cmd+shift+s",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Sync to Norns"
+    },
+    {
+        "key": "cmd+shift+r",
+        "command": "workbench.action.tasks.runTask", 
+        "args": "Sync to Norns (with restart)"
+    },
+    {
+        "key": "cmd+shift+d",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Sync Directory to Norns"
+    }
+]

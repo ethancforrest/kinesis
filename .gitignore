@@ -1,0 +1,49 @@
+# Norns Development Environment
+.DS_Store
+*.pyc
+__pycache__/
+.pytest_cache/
+.coverage
+.env
+.venv
+env/
+venv/
+
+# VS Code (keep tasks and keybindings, ignore personal settings)
+.vscode/settings.json
+.vscode/launch.json
+
+# Temporary files
+*.tmp
+*.log
+.cache/
+
+# Audio files (unless specifically needed)
+*.wav
+*.aif
+*.flac
+*.mp3
+
+# Personal/sensitive files  
+*password*
+*secret*
+*key*
+*.pem
+
+# Podcast/transcript files
+*.vtt
+*podcast*
+*transcript*
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Norns specific temporary files
+norns/
+libmonome/
+
+# macOS specific
+.Spotlight-V100
+.Trashes

@@ -1,0 +1,3 @@
+"""
+Norns MCP Server package.
+"""
