@@ -1,6 +1,65 @@
 
 local tabutil = require "tabutil"
 
+-- Try to load bit library for Lua 5.1 compatibility
+local bit = bit or bit32 or {}
+
+-- Add bit operations for Lua 5.1 compatibility
+if not bit.lshift then
+  function bit.lshift(a, n)
+    return a * (2 ^ n)
+  end
+end
+
+if not bit.rshift then
+  function bit.rshift(a, n)
+    return math.floor(a / (2 ^ n))
+  end
+end
+
+if not bit.band then
+  function bit.band(a, b)
+    local result = 0
+    local bitval = 1
+    while a > 0 and b > 0 do
+      if a % 2 == 1 and b % 2 == 1 then
+        result = result + bitval
+      end
+      bitval = bitval * 2
+      a = math.floor(a / 2)
+      b = math.floor(b / 2)
+    end
+    return result
+  end
+end
+
+if not bit.bnot then
+  function bit.bnot(a)
+    return (-a - 1)
+  end
+end
+
+if not bit.bxor then
+  function bit.bxor(a, b)
+    if a == 0 or a == 1 then
+      return a == 0 and b or 0
+    end
+    local result = 0
+    local bitval = 1
+    while a > 0 or b > 0 do
+      local abit = a % 2
+      local bbit = b % 2
+      if abit ~= bbit then
+        result = result + bitval
+      end
+      bitval = bitval * 2
+      a = math.floor(a / 2)
+      b = math.floor(b / 2)
+    end
+    return result
+  end
+end
+
 local mp = {}
 mp.__index = mp
 
@@ -60,11 +119,11 @@ function mp.new()
 		m.tick[i] = 0
 		m.max[i] = 8+i
 		m.min[i] = 8+i
-		m.trigger[i] = (1 << i)
+		m.trigger[i] = bit.lshift(1, i)
 		m.toggle[i] = 0
 		m.rules[i] = 2 -- inc
 		m.rule_dests[i] = i
-		m.sync[i] = (1 << i)
+		m.sync[i] = bit.lshift(1, i)
 		m.rule_dest_targets[i] = 3
 		m.smin[i] = 0
 		m.smax[i] = 0
@@ -80,48 +139,48 @@ function mp:apply_rule(i)
 	local rd = self.rule_dests[i]
 
 	if self.rules[i] == 2 then -- inc
-		if (self.rule_dest_targets[i] & 1) > 0 then
+		if bit.band(self.rule_dest_targets[i], 1) > 0 then
 			self.count[rd] = self.count[rd] + 1
 			if self.count[rd] > self.max[rd] then self.count[rd] = self.min[rd] end
 		end
 
-		if (self.rule_dest_targets[i] & 2) > 0 then
+		if bit.band(self.rule_dest_targets[i], 2) > 0 then
 			self.speed[rd] = self.speed[rd] + 1
 			if self.speed[rd] > self.smax[rd] then self.speed[rd] = self.smin[rd] end
 		end
 
 	elseif self.rules[i] == 3 then -- dec
-		if (self.rule_dest_targets[i] & 1) > 0 then
+		if bit.band(self.rule_dest_targets[i], 1) > 0 then
 			self.count[rd] = self.count[rd] - 1
 			if self.count[rd] < self.min[rd] then self.count[rd] = self.max[rd] end
 		end
 
-		if (self.rule_dest_targets[i] & 2) > 0 then
+		if bit.band(self.rule_dest_targets[i], 2) > 0 then
 			self.speed[rd] = self.speed[rd] - 1
 			if self.speed[rd] < self.smin[rd] then self.speed[rd] = self.smax[rd] end
 		end
 
 	elseif self.rules[i] == 4 then -- max
-		if (self.rule_dest_targets[i] & 1) > 0 then self.count[rd] = self.max[rd] end
+		if bit.band(self.rule_dest_targets[i], 1) > 0 then self.count[rd] = self.max[rd] end
 
-		if (self.rule_dest_targets[i] & 2) > 0 then self.speed[rd] = self.smax[rd] end
+		if bit.band(self.rule_dest_targets[i], 2) > 0 then self.speed[rd] = self.smax[rd] end
 
 	elseif self.rules[i] == 5 then -- min
-		if (self.rule_dest_targets[i] & 1) > 0 then self.count[rd] = self.min[rd] end
+		if bit.band(self.rule_dest_targets[i], 1) > 0 then self.count[rd] = self.min[rd] end
 
-		if (self.rule_dest_targets[i] & 2) > 0 then self.speed[rd] = self.smin[rd] end
+		if bit.band(self.rule_dest_targets[i], 2) > 0 then self.speed[rd] = self.smin[rd] end
 
 	elseif self.rules[i] == 6 then -- rnd
-		if (self.rule_dest_targets[i] & 1) > 0 then
+		if bit.band(self.rule_dest_targets[i], 1) > 0 then
 			self.count[rd] = math.random(self.min[rd], self.max[rd])
 		end
 
-		if (self.rule_dest_targets[i] & 2) > 0 then
+		if bit.band(self.rule_dest_targets[i], 2) > 0 then
 			self.speed[rd] = math.random(self.smin[rd], self.smax[rd])
 		end
 
 	elseif self.rules[i] == 7 then -- pole
-		if (self.rule_dest_targets[i] & 1) > 0 then
+		if bit.band(self.rule_dest_targets[i], 1) > 0 then
 			if math.abs(self.count[rd] - self.min[rd]) < math.abs(self.count[rd] - self.max[rd]) then
 				self.count[rd] = self.max[rd]
 			else
@@ -129,7 +188,7 @@ function mp:apply_rule(i)
 			end
 		end
 
-		if (self.rule_dest_targets[i] & 2) > 0 then
+		if bit.band(self.rule_dest_targets[i], 2) > 0 then
 			if math.abs(self.speed[rd] - self.smin[rd]) < math.abs(self.speed[rd] - self.smax[rd]) then
 				self.speed[rd] = self.smax[rd]
 			else
@@ -138,7 +197,7 @@ function mp:apply_rule(i)
 		end
 
 	elseif self.rules[i] == 8 then -- stop
-		if (self.rule_dest_targets[i] & 1) > 0 then
+		if bit.band(self.rule_dest_targets[i], 1) > 0 then
 			self.position[rd] = -1
 		end
 	end
@@ -148,18 +207,18 @@ function mp:clock()
 	for i=1,8 do
 		if self.pushed[i] == 1 then
 			for n=1,8 do
-				if (self.sync[i] & (1 << n)) > 0 then
+				if bit.band(self.sync[i], bit.lshift(1, n)) > 0 then
 					self.position[n] = self.count[n]
 					self.tick[n] = self.speed[n]
 				end
 
-				if (self.trigger[i] & (1 << n)) > 0 then
+				if bit.band(self.trigger[i], bit.lshift(1, n)) > 0 then
 					self.state[n] = 1
 					self.clear[n] = 1
 				end
 
-				if (self.toggle[i] & (1 << n)) > 0 then
-					self.state[n] = self.state[n] ~ 1
+				if bit.band(self.toggle[i], bit.lshift(1, n)) > 0 then
+					self.state[n] = bit.bxor(self.state[n], 1)
 				end
 			end
 
@@ -175,18 +234,18 @@ function mp:clock()
 				self.position[i] = self.position[i] - 1
 
 				for n=1,8 do
-					if (self.sync[i] & (1 << n)) > 0 then
+					if bit.band(self.sync[i], bit.lshift(1, n)) > 0 then
 						self.position[n] = self.count[n]
 						self.tick[n] = self.speed[n]
 					end
 
-					if (self.trigger[i] & (1 << n)) > 0 then
+					if bit.band(self.trigger[i], bit.lshift(1, n)) > 0 then
 						self.state[n] = 1
 						self.clear[n] = 1
 					end
 
-					if (self.toggle[i] & (1 << n)) > 0 then
-						self.state[n] = self.state[n] ~ 1
+					if bit.band(self.toggle[i], bit.lshift(1, n)) > 0 then
+						self.state[n] = bit.bxor(self.state[n], 1)
 					end
 				end
 			elseif self.position[i] > 1 then
@@ -209,7 +268,7 @@ function mp:gridevent(x, y, z)
 	self.prev_mode = self.mode
 
 	if x == 1 then
-		self.kcount = self.kcount + ((z << 1)-1)
+		self.kcount = self.kcount + (bit.lshift(z, 1)-1)
 
 		if self.kcount < 0 then self.kcount = 0 end
 
@@ -233,7 +292,7 @@ function mp:gridevent(x, y, z)
 		end
 
 	elseif self.mode == mp.MODE_POSITION then
-		self.scount[y] = self.scount[y] + ((z << 1) - 1)
+		self.scount[y] = self.scount[y] + (bit.lshift(z, 1) - 1)
 		if self.scount[y] < 0 then self.scount[y] = 0 end
 
 		if z == 1 and self.scount[y] == 1 then
@@ -255,7 +314,7 @@ function mp:gridevent(x, y, z)
 			end
 		end
 	elseif self.mode == mp.MODE_SPEED then
-		self.scount[y] = self.scount[y] + ((z << 1) - 1)
+		self.scount[y] = self.scount[y] + (bit.lshift(z, 1) - 1)
 		if self.scount[y] < 0 then self.scount[y] = 0 end
 
 		if z == 1 then
@@ -274,13 +333,13 @@ function mp:gridevent(x, y, z)
 					end
 				end
 			elseif x == 6 then
-				self.toggle[self.edit_row] = self.toggle[self.edit_row] ~ (1 << y)
-				self.trigger[self.edit_row] = self.trigger[self.edit_row] & (~(1 << y))
+				self.toggle[self.edit_row] = bit.bxor(self.toggle[self.edit_row], bit.lshift(1, y))
+				self.trigger[self.edit_row] = bit.band(self.trigger[self.edit_row], bit.bnot(bit.lshift(1, y)))
 			elseif x == 7 then
-				self.trigger[self.edit_row] = self.trigger[self.edit_row] ~ (1 << y)
-				self.toggle[self.edit_row] = self.toggle[self.edit_row] & (~(1 << y))
+				self.trigger[self.edit_row] = bit.bxor(self.trigger[self.edit_row], bit.lshift(1, y))
+				self.toggle[self.edit_row] = bit.band(self.toggle[self.edit_row], bit.bnot(bit.lshift(1, y)))
 			elseif x == 5 then
-				self.sound = self.sound ~ 1
+				self.sound = bit.bxor(self.sound, 1)
 			elseif x == 3 then
 				if self.position[y] == -1 then 
 					self.position[y] = self.count[y]
@@ -288,7 +347,7 @@ function mp:gridevent(x, y, z)
 					self.position[y] = -1
 				end
 			elseif x == 4 then
-				self.sync[self.edit_row] = self.sync[self.edit_row] ~ (1 << y)
+				self.sync[self.edit_row] = bit.bxor(self.sync[self.edit_row], bit.lshift(1, y))
 			end
 		end
 	elseif self.mode == mp.MODE_RULES and z == 1 then
@@ -330,19 +389,19 @@ function mp:gridredraw(g)
 
 			if self.sound == 1 then gbuf:led_level_set(5, i, 2) end
 
-			if (self.toggle[self.edit_row] & (1 << i)) > 0 then
+			if bit.band(self.toggle[self.edit_row], bit.lshift(1, i)) > 0 then
 				gbuf:led_level_set(6, i, mp.L2)
 			else
 				gbuf:led_level_set(6, i, mp.L0)
 			end
 
-			if (self.trigger[self.edit_row] & (1 << i)) > 0 then
+			if bit.band(self.trigger[self.edit_row], bit.lshift(1, i)) > 0 then
 				gbuf:led_level_set(7, i, mp.L2)
 			else
 				gbuf:led_level_set(7, i, mp.L0)
 			end
 
-			if (self.sync[self.edit_row] & (1 << i)) > 0 then
+			if bit.band(self.sync[self.edit_row], bit.lshift(1, i)) > 0 then
 				gbuf:led_level_set(4, i, mp.L1)
 			else
 				gbuf:led_level_set(4, i, mp.L0)
@@ -380,7 +439,7 @@ function mp:gridredraw(g)
 		for i=1,8 do
 			local k = mp.SIGN[self.rules[self.edit_row]][i]
 			for j=1,8 do
-				if (k & (1 << j)) ~= 0 then
+				if bit.band(k, bit.lshift(1, j)) ~= 0 then
 					gbuf:led_level_set(9+j, i, mp.L2) 
 				end
 			end

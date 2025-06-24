@@ -26,10 +26,10 @@ local data_dir = _path.code .. "meadowphysics/data/"
 
 local shift = 0
 
-local MeadowPhysics = require "meadowphysics/lib/meadowphysics"
+local MeadowPhysics = require "lib/meadowphysics"
 local mp
 
-local GridScales = require "meadowphysics/lib/gridscales"
+local GridScales = require "lib/gridscales"
 local gridscales
 
 local MusicUtil = require "musicutil"
@@ -317,7 +317,7 @@ function init()
 	grid_clk:start()
 	clk:start()
 
-  hs.init()
+  if hs then hs.init() end
 end
 
 function event(row, state)
@@ -429,7 +429,7 @@ function key(n, z)
 		gridscales:set_scale(8)
 	end
 	if n == 2 and z == 1 then 
-		shift = shift ~ 1
+		shift = 1 - shift
 	elseif n == 3 and z == 1 then
 		if shift == 1 then
 			local success, err = pcall(function()
